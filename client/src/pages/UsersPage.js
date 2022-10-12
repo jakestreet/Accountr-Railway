@@ -21,6 +21,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { MDBInput } from 'mdb-react-ui-kit';
 import PasswordChecklist from "react-password-checklist"
+import Axios from "axios";
 
 export default function RequestsPage() {
 
@@ -459,7 +460,9 @@ export default function RequestsPage() {
         e.preventDefault();
         const subject = subjectInputRef.current.value;
         const body = bodyInputRef.current.value;
-        sendEmail(emailTo, subject, body);
+        const email = {subject: subject, body: body};
+        Axios.post("/send-email", email).then(res => console.log(res))
+        //sendEmail(emailTo, subject, body);
         //handleCloseSendEmail();
         setOpenEmailAlert(true);
     }
