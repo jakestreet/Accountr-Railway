@@ -3,6 +3,7 @@ const cors = require("cors");
 const path = require('path');
 
 const express = require("express");
+const bodyParser = require("body-parser");
 
 const PORT = process.env.PORT || 3001;
 
@@ -13,13 +14,16 @@ app.use(cors());
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
+const jsonParser = bodyParser.json();
+
 app.get("/api", (req, res) => {
     res.json({ message: "Hello from server!" });
 });
 
-app.post("/send-email", (req, res) => {
+app.post("/send-email", jsonParser, (req, res) => {
     const body = req.body;
-    body.subject = "Subject replaced by server";
+    console.log("Body: " + body.emailAddress)
+    body.subject = "Subject changed by server";
     res.json(body);
 })
   
