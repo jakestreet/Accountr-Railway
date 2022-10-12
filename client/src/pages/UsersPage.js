@@ -460,9 +460,13 @@ export default function RequestsPage() {
         e.preventDefault();
         const subject = subjectInputRef.current.value;
         const body = bodyInputRef.current.value;
-        const email = JSON.stringify({subject: subject, body: body});
-        Axios.post("/send-email", email, {headers:{"Content-Type" : "application/json"}})
-        .then(res => console.log(res))
+        const email = {subject: subject, body: body};
+
+        fetch("/send-email", {
+          method: 'POST',
+          headers: {"Content-Type" : "application/json"},
+          body: JSON.stringify(email)
+        }).then(res => console.log(res))
         .catch(error => console.log(error.response.data))
         //sendEmail(emailTo, subject, body);
         //handleCloseSendEmail();
