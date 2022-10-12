@@ -61,6 +61,7 @@ export default function LoginPage() {
     })
 
     useEffect(() => {
+      //http://localhost:3001
       fetch("/api")
         .then((res) => res.json())
         .then((data) => setData(data.message));
