@@ -50,6 +50,7 @@ export default function LoginPage() {
     const [haveInfo, setHaveInfo] = useState(false);
     const [choiceOne, setChoiceOne] = useState("");
     const [choiceTwo, setChoiceTwo] = useState("");
+    const [data, setData] = useState(null);
     
     
     useEffect(() => {
