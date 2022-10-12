@@ -1,9 +1,12 @@
 // server/index.js
+require('dotenv').config();
 const cors = require("cors");
 const path = require('path');
 
 const express = require("express");
 const bodyParser = require("body-parser");
+
+const nodemailer = require('nodemailer');
 
 const PORT = process.env.PORT || 3001;
 
@@ -16,15 +19,37 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 const jsonParser = bodyParser.json();
 
-app.get("/api", (req, res) => {
-    res.json({ message: "Hello from server!" });
-});
+const transporter = nodemailer.createTransport({
+    port: 587,
+    host: "smtp.sendgrid.net",
+        auth: {
+            user: "apikey",
+            pass: process.env.SENDGRID_API_KEY,
+        },
+    secure: false,
+})
 
 app.post("/send-email", jsonParser, (req, res) => {
     const body = req.body;
-    console.log("Body: " + body.emailAddress)
-    body.subject = "Subject changed by server";
-    res.json(body);
+    const mailData = {
+        from: "teamjest4713@gmail.com",
+        to: body.emailAddress,
+        subject: body.subject,
+        text: body.body,
+    }
+
+    transporter.sendMail(mailData, function (err, info) {
+        if(err) {
+            console.log(err);
+            res.json(err);
+        }
+
+        else {
+            console.log(info);
+            body.message = "Email Sent!";
+            res.json(body);
+        }
+     });
 })
   
 app.listen(PORT, () => {

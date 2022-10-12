@@ -27,7 +27,7 @@ export default function RequestsPage() {
 
     const db = getFirestore(app);
     const navigate = useNavigate();
-    const { currentRole, signupAdmin, logoutAdmin, sendEmail, currentUser, emailMessage } = useAuth();
+    const { currentRole, signupAdmin, logoutAdmin, sendEmail, currentUser } = useAuth();
 
     const [rows, setRows] = useState([]);
 
@@ -42,6 +42,8 @@ export default function RequestsPage() {
       setOpenSendEmail(false)
       setOpenEmailAlert(false)
     }
+    const [emailMessage, setEmailMessage] = useState();
+    const [isSending, setIsSending] = useState(false);
     const [openSuspension, setOpenSuspension] = useState(false);
     const handleOpenSuspension = () => setOpenSuspension(true);
     const handleCloseSuspension = () => setOpenSuspension(false);
@@ -460,18 +462,21 @@ export default function RequestsPage() {
         e.preventDefault();
         const subject = subjectInputRef.current.value;
         const body = bodyInputRef.current.value;
-        const email = JSON.stringify({subject: subject, body: body});
-
+        const placeHolderEmailMessage = "none";
+        setIsSending(true);
+        
         //http://localhost:3001
-        Axios.post("/send-email", {
+        Axios.post("http://localhost:3001/send-email", {
           emailAddress: emailTo,
           subject: subject,
           body: body,
-        }).then(res => console.log(res.data))
+          message: placeHolderEmailMessage,
+        }).then(res => {
+          setEmailMessage(res.data.message);
+          setOpenEmailAlert(true);
+          setIsSending(false);
+        })
         .catch(error => console.log(error.response.data))
-        //sendEmail(emailTo, subject, body);
-        //handleCloseSendEmail();
-        setOpenEmailAlert(true);
     }
 
     function editInfoOnClick(){
@@ -673,9 +678,9 @@ export default function RequestsPage() {
             <Box sx={style}>
                 {SendAlert()}
                 <MDBInput wrapperClass='mb-4' label='Email' id='regEmail' type='email' inputRef={emailInputRef}/>
-                <MDBInput wrapperClass='mb-4' label='Role (User, Manager, Admin)' id='regFirst' type='text' inputRef={roleInputRef}/>
+                <MDBInput wrapperClass='mb-4' label='Role (User, Manager, Admin)' id='regRole' type='text' inputRef={roleInputRef}/>
                 <MDBInput wrapperClass='mb-4' label='Password' id='regPassword' type='password' onChange={e => setPassword(e.target.value)} inputRef={passwdInputRef}/>
-                  <MDBInput wrapperClass='mb-2' label='Confirm Password' id='regPassword' type='password' onChange={e => setPasswordAgain(e.target.value)} inputRef={conPasswdInputRef}/>
+                  <MDBInput wrapperClass='mb-2' label='Confirm Password' id='regPasswordConfirm' type='password' onChange={e => setPasswordAgain(e.target.value)} inputRef={conPasswdInputRef}/>
                   <PasswordChecklist className='mb-3'
                   rules={["minLength","specialChar","number","letter","match"]}
                   minLength={8}
@@ -706,7 +711,8 @@ export default function RequestsPage() {
                 <label>From: {currentUser.email}</label>
                 <MDBInput wrapperClass='mb-4 mt-2' label='Subject' id='subject' type='text' inputRef={subjectInputRef}/>
                 <MDBTextArea label="Body" id="body" type="text" rows={10} inputRef={bodyInputRef}></MDBTextArea>
-                <MDBBtn onClick={SendEmailOnClick} className="d-md-flex m-auto mt-4" style={{background: 'rgba(41,121,255,1)'}}>Send Email</MDBBtn>
+                { !isSending && <MDBBtn onClick={SendEmailOnClick} className="d-md-flex m-auto mt-4" style={{background: 'rgba(41,121,255,1)'}}>Send Email</MDBBtn> }
+                { isSending && <MDBBtn onClick={SendEmailOnClick} className="d-md-flex m-auto mt-4" style={{background: 'rgba(41,121,255,1)'}} disabled>Sending...</MDBBtn> }
                 <MDBBtn onClick={() => {handleCloseSendEmail()}} className="d-md-flex m-auto mt-4" style={{background: 'rgba(41,121,255,1)'}}>Close</MDBBtn>
             </Box>
         </Modal>

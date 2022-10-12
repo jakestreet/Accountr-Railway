@@ -50,7 +50,6 @@ export default function LoginPage() {
     const [haveInfo, setHaveInfo] = useState(false);
     const [choiceOne, setChoiceOne] = useState("");
     const [choiceTwo, setChoiceTwo] = useState("");
-    const [data, setData] = useState(null);
     
     
     useEffect(() => {
@@ -59,13 +58,6 @@ export default function LoginPage() {
         navigate("/home");
       }
     })
-
-    useEffect(() => {
-      //http://localhost:3001
-      fetch("/api")
-        .then((res) => res.json())
-        .then((data) => setData(data.message));
-    }, []);
 
     async function getRegisteredEmail() {
       try{
@@ -339,7 +331,6 @@ export default function LoginPage() {
     return (
           <div>
             {SendAlert()}
-            <p>{!data ? "Loading..." : data}</p>
             <MDBContainer className="p-3 my-5 d-flex flex-column w-50">
         
               <MDBTabs pills justify className='mb-3 d-flex flex-row justify-content-between'>
@@ -371,9 +362,9 @@ export default function LoginPage() {
         
                 <MDBTabsPane show={justifyActive === 'tab2'}>
                   <MDBInput wrapperClass='mb-4' label='Email' id='regEmail' type='email' inputRef={emailInputRef}/>
-                  <MDBInput wrapperClass='mb-4' label='Role (User, Manager, Admin)' id='regFirst' type='text' inputRef={roleInputRef}/>
+                  <MDBInput wrapperClass='mb-4' label='Role (User, Manager, Admin)' id='regRole' type='text' inputRef={roleInputRef}/>
                   <MDBInput wrapperClass='mb-4' label='Password' id='regPassword' type='password' onChange={e => setPassword(e.target.value)} inputRef={passwdInputRef}/>
-                  <MDBInput wrapperClass='mb-2' label='Confirm Password' id='regPassword' type='password' onChange={e => setPasswordAgain(e.target.value)} inputRef={conPasswdInputRef}/>
+                  <MDBInput wrapperClass='mb-2' label='Confirm Password' id='regPasswordConfirm' type='password' onChange={e => setPasswordAgain(e.target.value)} inputRef={conPasswdInputRef}/>
                   <PasswordChecklist className='mb-3'
                   rules={["minLength","specialChar","number","letter","match"]}
                   minLength={8}
