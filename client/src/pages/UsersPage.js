@@ -460,8 +460,8 @@ export default function RequestsPage() {
         e.preventDefault();
         const subject = subjectInputRef.current.value;
         const body = bodyInputRef.current.value;
-        const email = {subject: subject, body: body};
-        Axios.post("/send-email", email).then(res => console.log(res))
+        const email = JSON.stringify({subject: subject, body: body});
+        Axios.post("/send-email", email, {headers:{"Content-Type" : "application/json"}}).then(res => console.log(res))
         //sendEmail(emailTo, subject, body);
         //handleCloseSendEmail();
         setOpenEmailAlert(true);
