@@ -466,7 +466,7 @@ export default function RequestsPage() {
         setIsSending(true);
         
         //http://localhost:3001
-        Axios.post("http://localhost:3001/send-email", {
+        Axios.post("/send-email", {
           name: "Jake Street",
           emailAddress: emailTo,
           subject: subject,
