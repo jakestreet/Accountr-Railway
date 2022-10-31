@@ -14,7 +14,7 @@ module.exports = function(app) {
             },
         secure: false,
     })
-    
+    //trigger deploy
     app.post("/send-email", jsonParser, (req, res) => {
         const body = req.body;
         console.log(body.name);
